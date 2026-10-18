@@ -1,0 +1,5 @@
+0000000000000000000000000000000000000000 a10b4746995c5a4c1bc022a1a89fe5ebe3636e17 soerjo <ryohastomo@gmail.com> 1792347118 +0700	commit (initial): chore: scaffold Next.js + deps (eslint ^9, next 16, react 19)
+a10b4746995c5a4c1bc022a1a89fe5ebe3636e17 16082d0a89af3b6125b946db0ddba6144720b8be soerjo <ryohastomo@gmail.com> 1792347786 +0700	commit: feat: KULT Barber & Atelier Next.js implementation
+16082d0a89af3b6125b946db0ddba6144720b8be 5250e15d7f979ed24fc2285c1451a059d9b27445 soerjo <ryohastomo@gmail.com> 1792348207 +0700	commit: feat: KULT Barber & Atelier Next.js implementation
+5250e15d7f979ed24fc2285c1451a059d9b27445 93f86dfdce0f0017e7945dfb5bd1f191a8abb870 soerjo <ryohastomo@gmail.com> 1792348334 +0700	commit: feat: KULT Barber & Atelier Next.js implementation
+93f86dfdce0f0017e7945dfb5bd1f191a8abb870 dd2df32ff2acadcccda5f06372f78c3a1c9f80f2 soerjo <ryohastomo@gmail.com> 1792348402 +0700	commit: chore: untrack node_modules, .next, out from repo
