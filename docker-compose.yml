@@ -1,0 +1,11 @@
+services:
+  kult-barbershop-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kult-barbershop-ui
+    restart: unless-stopped
+    ports:
+      - "3606:80"
+    environment:
+      - TZ=Asia/Jakarta
