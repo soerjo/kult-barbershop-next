@@ -1,22 +1,29 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Clock, ChevronRight } from "lucide-react";
+import { Check, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+ // button removed
 import { Card, CardContent } from "@/components/ui/card";
 
-interface ServiceItem {
+export interface ServiceItem {
   id: string;
   name: string;
-  category: string;
+  category?: string;
   price: string;
-  duration: string;
+  duration?: string;
   description: string;
-  features: string[];
+  features?: string[];
 }
 
-const services: ServiceItem[] = [
+export interface ServicesMenuProps {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  services?: ServiceItem[];
+}
+
+const DEFAULT_SERVICES: ServiceItem[] = [
   {
     id: "1",
     name: "The KULT Signature Haircut",
@@ -46,142 +53,126 @@ const services: ServiceItem[] = [
   },
   {
     id: "4",
-    name: "Beard Sculpting & Trim",
-    category: "Grooming",
-    price: "IDR 200,000",
-    duration: "30 Mins",
-    description: "Detailed beard shaping, razor line-up, conditioning beard oil treatment, and mustache wax styling.",
-    features: ["Beard Shaping & Trim", "Straight Razor Line-up", "Organic Beard Oil Treatment", "Mustache Styling"]
+    name: "Beard Sculpt & Contouring",
+    category: "Shave",
+    price: "IDR 180,000",
+    duration: "25 Mins",
+    description: "Line-up sculpting with straight razor precision, trimming, organic beard oil conditioning, and hot towel finish.",
+    features: ["Length & Shape Consultation", "Straight Razor Edging", "Organic Conditioning Oil", "Hot Towel Finish"]
   },
   {
     id: "5",
-    name: "Deep Scalp Detox Treatment",
+    name: "Scalp Clarifying Detox",
     category: "Treatment",
-    price: "IDR 400,000",
-    duration: "45 Mins",
-    description: "Revitalizing treatment targeting follicle buildup, dandruff, and scalp tension with botanical serums and pressure point massage.",
-    features: ["Microscopic Scalp Analysis", "Exfoliating Scrub", "Botanical Serum Infusion", "Pressure Point Massage"]
+    price: "IDR 300,000",
+    duration: "40 Mins",
+    description: "Deep exfoliation treatment removing product buildup, balancing sebum production, followed by a peptide tonic scalp massage.",
+    features: ["Microscopic Scalp Analysis", "Sea Salt Scalp Scrub", "Stimulating Massage", "Peptide Infusion Tonic"]
   },
   {
     id: "6",
-    name: "Hair Coloring & Camouflage",
-    category: "Color",
-    price: "IDR 500,000+",
-    duration: "60 Mins",
-    description: "Grey blending or full bespoke color transformation using premium ammonia-free professional formulas.",
-    features: ["Color Consultation", "Ammonia-Free Formula", "Processing & Wash", "Post-Color Treatment"]
+    name: "Charcoal Purifying Facial",
+    category: "Treatment",
+    price: "IDR 275,000",
+    duration: "35 Mins",
+    description: "Activated bamboo charcoal deep pore cleansing, steam extraction, cold stone pore closing, and botanical hydration serum.",
+    features: ["Deep Cleansing Wash", "Warm Botanical Steam", "Activated Charcoal Mask", "Cold Jade Roller Finish"]
   }
 ];
 
-export function ServicesMenu() {
-  const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
+export function ServicesMenu({
+  eyebrow = "Service Menu",
+  title = "Tailored Grooming Rituals",
+  description = "All services include complimentary consultation, premium Japanese hair wash, and hot towel refreshment.",
+  services = DEFAULT_SERVICES,
+}: ServicesMenuProps) {
+  const [activeCategory, setActiveCategory] = useState<string>("All");
+
+  const categories = ["All", ...Array.from(new Set(services.map((s) => s.category).filter(Boolean)))];
+
+  const filteredServices = activeCategory === "All" 
+    ? services 
+    : services.filter((s) => s.category === activeCategory);
 
   return (
-    <section id="services" className="py-20 bg-zinc-950 border-t border-zinc-900">
+    <section id="services" className="py-20 bg-zinc-900/40 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <Badge variant="outline" className="border-amber-500/30 text-amber-400 mb-3">Atelier Menu</Badge>
-          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white mb-4">Services & Pricing</h2>
-          <p className="text-zinc-400 text-sm sm:text-base">
-            Transparent pricing for uncompromising craftsmanship. Select any service to view detailed ritual components.
-          </p>
+        {/* Section Header */}
+        <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-16">
+          {eyebrow && (
+            <Badge variant="outline" className="border-amber-500/30 text-amber-400 mb-3 font-mono text-xs">
+              {eyebrow}
+            </Badge>
+          )}
+          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white mb-4">
+            {title}
+          </h2>
+          {description && (
+            <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">
+              {description}
+            </p>
+          )}
+
+          {/* Category Tabs */}
+          {categories.length > 2 && (
+            <div className="flex items-center gap-2 mt-8 p-1.5 rounded-full bg-zinc-950 border border-zinc-800 flex-wrap justify-center">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat as string)}
+                  className={`px-5 py-2 rounded-full text-xs font-medium transition-all ${
+                    activeCategory === cat
+                      ? "bg-amber-500 text-zinc-950 font-semibold shadow-sm"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
+        {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service) => (
-            <Card 
-              key={service.id} 
-              onClick={() => setSelectedService(service)}
-              className="group cursor-pointer bg-zinc-900/40 border-zinc-800 hover:border-amber-500/50 transition-all duration-300 flex flex-col justify-between"
-            >
+          {filteredServices.map((service) => (
+            <Card key={service.id} className="border border-zinc-800 bg-zinc-950/80 backdrop-blur-sm flex flex-col justify-between hover:border-amber-500/40 transition-colors">
               <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <Badge variant="secondary" className="bg-zinc-800 text-zinc-300 text-xs font-mono">
-                    {service.category}
-                  </Badge>
-                  <div className="flex items-center gap-1.5 text-xs text-zinc-400 font-mono">
-                    <Clock className="size-3.5 text-amber-500" />
+                <div className="flex justify-between items-start gap-4 mb-3">
+                  <h3 className="font-bold text-lg text-white group-hover:text-amber-400 transition-colors">
+                    {service.name}
+                  </h3>
+                  <span className="font-mono text-amber-500 font-bold text-base whitespace-nowrap">
+                    {service.price}
+                  </span>
+                </div>
+                
+                {service.duration && (
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-500 mb-4 font-mono">
+                    <Clock className="size-3.5" />
                     <span>{service.duration}</span>
                   </div>
-                </div>
+                )}
 
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-amber-400 transition-colors">
-                  {service.name}
-                </h3>
-
-                <p className="text-zinc-400 text-sm mb-6 line-clamp-2">
+                <p className="text-xs text-zinc-400 leading-relaxed mb-6">
                   {service.description}
                 </p>
 
-                <div className="flex items-center justify-between pt-4 border-t border-zinc-800/80">
-                  <span className="text-lg font-bold font-mono text-amber-500">{service.price}</span>
-                  <div className="flex items-center gap-1 text-xs font-medium text-zinc-400 group-hover:text-white transition-colors">
-                    <span>Details</span>
-                    <ChevronRight className="size-4" />
-                  </div>
-                </div>
+                {service.features && service.features.length > 0 && (
+                  <ul className="space-y-2 border-t border-zinc-900 pt-4">
+                    {service.features.map((feat, idx) => (
+                      <li key={idx} className="flex items-center gap-2 text-xs text-zinc-300">
+                        <Check className="size-3.5 text-amber-500 shrink-0" />
+                        <span>{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </CardContent>
             </Card>
           ))}
         </div>
-
-        {/* Modal / Detail Drawer simulated inline or popup */}
-        {selectedService && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-sm">
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-              <div className="flex items-center justify-between mb-4">
-                <Badge className="bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">
-                  {selectedService.category} Ritual
-                </Badge>
-                <button 
-                  onClick={() => setSelectedService(null)}
-                  className="size-8 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-700 transition-colors"
-                >
-                  ✕
-                </button>
-              </div>
-
-              <h3 className="text-2xl font-bold text-white mb-2">{selectedService.name}</h3>
-              <p className="text-amber-500 font-mono text-lg font-bold mb-4">{selectedService.price} <span className="text-xs text-zinc-400 font-normal">({selectedService.duration})</span></p>
-
-              <p className="text-zinc-300 text-sm mb-6 leading-relaxed">
-                {selectedService.description}
-              </p>
-
-              <div className="space-y-3 mb-8">
-                <h4 className="text-xs uppercase tracking-wider font-mono text-zinc-400">Included in Ritual:</h4>
-                {selectedService.features.map((feature, idx) => (
-                  <div key={idx} className="flex items-center gap-3 text-sm text-zinc-300 bg-zinc-950/50 p-2.5 rounded-lg border border-zinc-800/60">
-                    <div className="size-5 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center">
-                      <Check className="size-3" />
-                    </div>
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-3">
-                <Button 
-                  onClick={() => setSelectedService(null)}
-                  variant="outline" 
-                  className="flex-1 border-zinc-800 text-zinc-300 hover:bg-zinc-800"
-                >
-                  Close
-                </Button>
-                <Button 
-                  onClick={() => {
-                    alert(`Booking request initiated for ${selectedService.name}`);
-                    setSelectedService(null);
-                  }}
-                  className="flex-1 bg-amber-500 text-zinc-950 hover:bg-amber-400 font-semibold"
-                >
-                  Book This Service
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
 
       </div>
     </section>
